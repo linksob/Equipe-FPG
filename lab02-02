@@ -1,0 +1,160 @@
+/*
+*  lab02-02  Exercício 2*
+*/
+
+#include <GL/glut.h>
+#include <math.h>
+
+void display(void)
+{
+    /* clear all pixels  */
+    glClear (GL_COLOR_BUFFER_BIT);
+
+    //CONTORNO CIRCULO 1
+    float raio = 1, calx, caly;
+
+    glColor3f (0.0, 0.0, 0.0);
+    glBegin(GL_LINE_LOOP);
+        for (float i = 0; i < 10; i+=0.01) {
+         calx = raio*cos(i);
+         caly = raio*sin(i);
+         glVertex2f(calx, caly);
+        }
+    glEnd();
+
+    //CIRCULO 1
+    float r = 0.98, cx, cy;
+
+    glColor3f (1.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+        for (float i = 0; i < 10; i+=0.01) {
+         cx = r*cos(i);
+         cy = r*sin(i);
+         glVertex2f(cx, cy);
+        }
+    glEnd();
+
+   //HEXAGONO
+   glColor3f (1.0, 0.0, 0.0);
+   glBegin(GL_POLYGON);
+      glVertex3f (-0.60, 0.80, 0.0);
+      glVertex3f (0.60, 0.80, 0.0);
+      glVertex3f (1.00, 0.00, 0.0);
+      glVertex3f (0.60, -0.80, 0.0);
+      glVertex3f (-0.60, -0.80, 0.0);
+      glVertex3f (-1.00, 0.00, 0.0);
+   glEnd();
+
+   //CONTORNO HEXAGONO
+   glColor3f (0.0, 0.0, 0.0);
+   glBegin(GL_LINE_LOOP);
+      glVertex3f (-0.60, 0.80, 0.0);
+      glVertex3f (0.60, 0.80, 0.0);
+      glVertex3f (1.00, 0.00, 0.0);
+      glVertex3f (0.60, -0.80, 0.0);
+      glVertex3f (-0.60, -0.80, 0.0);
+      glVertex3f (-1.00, 0.00, 0.0);
+   glEnd();
+
+   //QUADRADO
+   glColor3f (0.0, 0.5, 0.0);
+   glBegin(GL_POLYGON);
+      glVertex3f (-0.60, 0.60, 0.0);
+      glVertex3f (0.60, 0.60, 0.0);
+      glVertex3f (0.60, -0.60, 0.0);
+      glVertex3f (-0.60, -0.60, 0.0);
+   glEnd();
+
+   //CONTORNO QUADRADO
+   glColor3f (0.0, 0.0, 0.0);
+   glBegin(GL_LINE_LOOP);
+      glVertex3f (-0.60, 0.60, 0.0);
+      glVertex3f (0.60, 0.60, 0.0);
+      glVertex3f (0.60, -0.60, 0.0);
+      glVertex3f (-0.60, -0.60, 0.0);
+   glEnd();
+
+    //CONTRONO CIRCULO 2
+    float raio3 = 0.60, calx3, caly3;
+
+    glColor3f (0.0, 0.0, 0.0);
+    glBegin(GL_LINE_LOOP);
+        for (float i = 0; i < 10; i+=0.01) {
+         calx3 = raio3*cos(i);
+         caly3 = raio3*sin(i);
+         glVertex2f(calx3, caly3);
+        }
+    glEnd();
+
+    //CIRCULO 2
+    float raio2 = 0.5999, calx2, caly2;
+
+    glColor3f (0.0, 1.0, 1.0);
+    glBegin(GL_POLYGON);
+        for (float i = 0; i < 10; i+=0.01) {
+         calx2 = raio2*cos(i);
+         caly2 = raio2*sin(i);
+         glVertex2f(calx2, caly2);
+        }
+    glEnd();
+
+   //CRUZ
+   glColor3f (0.0, 0.0, 0.0);
+   glBegin(GL_LINES);
+      glVertex3f (0.00, 1.50, 0.0);
+      glVertex3f (0.00, -1.50, 0.0);
+      glVertex3f (-1.50, 0.00, 0.0);
+      glVertex3f (1.50, 0.00, 0.0);
+   glEnd();
+
+   //TRIANGULO
+   glColor3f(1.0, 0.0, 1.0);
+   glBegin(GL_POLYGON);
+      glVertex3f (-0.50, 0.33, 0.0);
+      glVertex3f (0.50, -0.33, 0.0);
+      glVertex3f (-0.50, -0.33, 0.0);
+   glEnd();
+
+   //CONTORNO TRIANGULO
+   glColor3f(0.0, 0.0, 0.0);
+   glBegin(GL_LINE_LOOP);
+      glVertex3f (-0.50, 0.33, 0.0);
+      glVertex3f (0.50, -0.33, 0.0);
+      glVertex3f (-0.50, -0.33, 0.0);
+   glEnd();
+
+   glFlush ();
+
+}
+
+
+void init (void)
+{
+/* select clearing color 	*/
+   glClearColor (1.0, 1.0, 1.0, 1.0);
+
+/* initialize viewing values  */
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(-2, 2, -2, 2, -2, 2);
+}
+
+/*
+ * Declare initial window size, position, and display mode
+ * (single buffer and RGBA).  Open window with "hello"
+ * in its title bar.  Call initialization routines.
+ * Register callback function to display graphics.
+ * Enter main loop and process events.
+ */
+int main(int argc, char** argv)
+{
+   glutInit(&argc, argv);
+   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+   glutInitWindowSize (250, 250);
+   glutInitWindowPosition (100, 100);
+   glutCreateWindow ("hello");
+   init ();
+   glutDisplayFunc(display);
+   glutMainLoop();
+   return 0;   /* ANSI C requires main to return int. */
+}
