@@ -1,7 +1,7 @@
 /*
 *  lab02-01  Exercício 1
 *
-
+*/
 
 #include <GL/glut.h>
 #include <math.h>
