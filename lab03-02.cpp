@@ -1,0 +1,248 @@
+//exercício 3-B
+//mudança de cor da figura, botões: c, v, b
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+#include <stdlib.h>
+
+
+static int collor1 = 1.0, collor2 = 1.0, collor3 = 1.0;
+static GLfloat spin = 0.0;
+
+void init (void)
+{
+/* select clearing color 	*/
+   glClearColor (0.0, 0.0, 0.0, 0.0);
+
+/* initialize viewing values  */
+   glMatrixMode(GL_PROJECTION);
+   glLoadIdentity();
+   glOrtho(-15.0, 15, -15.0, 15, -15.0, 15.0);
+}
+
+
+//display create
+void display(void)
+{
+/* clear all pixels  */
+   glClear (GL_COLOR_BUFFER_BIT);
+
+/* draw white polygon (rectangle) with corners at
+ * (0.25, 0.25, 0.0) and (0.75, 0.75, 0.0)
+ */
+   
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (0.0, 6.0, 0.0);
+      glVertex3f (-1.0, 2.0, 0.0);
+      glVertex3f (1.0, 2.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (2.0, 1.0, 0.0);
+      glVertex3f (6.0, 0.0, 0.0);
+      glVertex3f (2.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (1.0, -2.0, 0.0);
+      glVertex3f (0.0, -6.0, 0.0);
+      glVertex3f (-1.0, -2.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (-2.0, -1.0, 0.0);
+      glVertex3f (-6.0, 0.0, 0.0);
+      glVertex3f (-2.0, 1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (-2.0, 1.0, 0.0);
+      glVertex3f (-1.0, 0.0, 0.0);
+      glVertex3f (-2.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (-2.0, -1.0, 0.0);
+      glVertex3f (-1.0, 0.0, 0.0);
+      glVertex3f (0.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (0.0, -1.0, 0.0);
+      glVertex3f (-1.0, -2.0, 0.0);
+      glVertex3f (-2.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (-1.0, -2.0, 0.0);
+      glVertex3f (0.0, -1.0, 0.0);
+      glVertex3f (1.0, -2.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (0.0, -1.0, 0.0);
+      glVertex3f (1.0, -2.0, 0.0);
+      glVertex3f (2.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (2.0, -1.0, 0.0);
+      glVertex3f (1.0, 0.0, 0.0);
+      glVertex3f (0.0, -1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (2.0, -1.0, 0.0);
+      glVertex3f (1.0, 0.0, 0.0);
+      glVertex3f (2.0, 1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (2.0, 1.0, 0.0);
+      glVertex3f (1.0, 0.0, 0.0);
+      glVertex3f (0.0, 1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (0.0, 1.0, 0.0);
+      glVertex3f (1.0, 2.0, 0.0);
+      glVertex3f (2.0, 1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (1.0, 2.0, 0.0);
+      glVertex3f (0.0, 1.0, 0.0);
+      glVertex3f (-1.0, 2.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (0.0, 1.0, 0.0);
+      glVertex3f (-1.0, 2.0, 0.0);
+      glVertex3f (-2.0, 1.0, 0.0);
+   glEnd();
+
+   glColor3f (collor1, collor2, collor3);
+   glBegin(GL_TRIANGLES);
+      glVertex3f (-2.0, 1.0, 0.0);
+      glVertex3f (-1.0, 0.0, 0.0);
+      glVertex3f (0.0, 1.0, 0.0);
+   glEnd();
+   glRotatef(spin, 0.0, 0.0, 1.0);
+/* don't wait!
+ * start processing buffered OpenGL routines
+ */
+   glFlush ();
+}
+void spinDisplay(void)
+{
+   spin = spin + 2.0;
+   if (spin > 360.0)
+      spin = spin - 360.0;
+   glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y) 
+{
+   switch (button) {
+      case GLUT_LEFT_BUTTON:
+         if (state == GLUT_DOWN)
+            glutIdleFunc(spinDisplay);
+         break;
+      case GLUT_MIDDLE_BUTTON:
+      case GLUT_RIGHT_BUTTON:
+         if (state == GLUT_DOWN)
+            glutIdleFunc(NULL);
+         break;
+      default:
+         break;
+   }
+}
+
+//keyboard interactions
+void keyboard (unsigned char key, int x, int y)
+{
+   switch (key) {
+      case 'C':
+      	 if(collor1 == 1.0){
+      	    collor1 = 0.0;
+      	 }else{
+      	    collor1 = 1.0;
+      	 }
+         glutPostRedisplay();
+         break;
+      case 'c':
+         if(collor1 == 1.0){
+            collor1 = 0.0;
+         }else{
+            collor1 = 1.0;
+         }
+         glutPostRedisplay();
+         break;
+      case 'V':
+      	 if(collor2 == 1.0){
+      	    collor2 = 0.0;
+      	 }else{
+      	    collor2 = 1.0;
+      	 }
+         glutPostRedisplay();
+         break;
+      case 'v':
+         if(collor2 == 1.0){
+            collor2 = 0.0;
+         }else{
+            collor2 = 1.0;
+         }
+         glutPostRedisplay();
+         break;
+      case 'B':
+         if(collor3 == 1.0){
+            collor3 = 0.0;
+         }else{
+            collor3 = 1.0;
+         }
+         glutPostRedisplay();
+         break;
+      case 'b':
+         if(collor3 == 1.0){
+            collor3 = 0.0;
+         }else{
+            collor3 = 1.0;
+         }
+         glutPostRedisplay();
+         break;
+      default:
+         break;
+   }
+}
+
+//main
+int main(int argc, char** argv)
+{
+   glutInit(&argc, argv);
+   glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+   glutInitWindowSize (250, 250);
+   glutInitWindowPosition (100, 100);
+   glutCreateWindow ("hello");
+   init ();
+   glutDisplayFunc(display);
+   glutKeyboardFunc(keyboard);
+   glutMouseFunc(mouse);
+   glutMainLoop();
+   return 0;   /* ANSI C requires main to return int. */
+}
