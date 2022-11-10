@@ -25,14 +25,14 @@ void init(void)
 {
    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
    GLfloat mat_shininess[] = { 50.0 };
-   GLfloat light_position[] = { 0.0, 0.0, 1.0, 0.0 };
+   GLfloat light_position[] = { 1.0, 0.0, 0.0, 0.0 };   
 
    glClearColor (0.0, 0.0, 0.0, 0.0);
    glShadeModel (GL_SMOOTH);
 
    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_position);
+   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_position);  
 
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
@@ -54,44 +54,56 @@ void pointOfView(){
 
 }
 
-void drawSun(){
-    glColor3f(1.0, 1.0, 0.0);
-    glPushMatrix();
+void drawSun(){   
+  
     glTranslatef(0,0,-4);
     glutSolidSphere(1.5, 20, 16);   /* draw sun */
-    //glPopMatrix();
+    //lRotatef ((GLfloat) year, 0.0, 1.0, 0.0);    
+     
 }
 
-void drawEarth(){
-    glPushMatrix();
-    glColor3f(0.0, 0.0, 1.0);
-    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
+void drawEarth(){   
+
+    glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
     glTranslatef (earthDist, 0.0, 0.0);
+    glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
     glutSolidSphere(0.6, 20, 16);    /* draw earth */
-    //glPopMatrix();
+    
 }
 
 void drawMoon(){
-    glPushMatrix();
-    glTranslatef (moonDist, 0.0, 0.0);
-    glColor3f(1.0, 1.0, 1.0);
-    glutSolidSphere(0.2, 20, 16);  /* draw moon */
-    glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);
+    
+    glTranslatef (moonDist, 0.0, 0.0);  
+    ///glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);  
+    glutSolidSphere(0.2, 20, 16);  /* draw moon */    
     glPopMatrix();
 }
 
 void incrementation(){
    //incremento na translação da terra (em torno do sol
-   year = year + 0.01;
+   year = year + 1;
    if(year > 360) year = year - 360;
 
    //incremento na rotação da terra
-   day = day + 0.05;
+   day = day + 5;
    if(day > 360) day = day - 360;
 
    //incremento na translação da lua (em torno da terra)
-   revolution = revolution + 0.03;
-   if(revolution > 360) revolution = revolution - 360;
+   //revolution = revolution + 3;
+   //if(revolution > 360) revolution = revolution - 360;
+}
+
+void desenhoOrbita(GLdouble tamanho){
+    //Orbita da terra/
+    GLUquadric *disk;
+    disk = gluNewQuadric(); 
+    glPushMatrix();    
+    glColor3f(1.0, 0.0, 1.0);     
+    glRotatef(89, 1, 0, 0);
+    glTranslatef(0, 0, 0);
+    gluDisk(disk, tamanho-0.1, tamanho, 600, 600);
+    glPopMatrix();
+    gluDeleteQuadric(disk);
 }
 
 void display(void)
@@ -101,8 +113,9 @@ void display(void)
    	glLoadIdentity();
    	pointOfView();
    	drawSun();
-   	drawEarth();
-   	drawMoon();
+   	desenhoOrbita(earthDist); 
+   	drawEarth();   	 
+   	drawMoon();    		
    	incrementation();
    	glutSwapBuffers(); //swap the buffers
 }
