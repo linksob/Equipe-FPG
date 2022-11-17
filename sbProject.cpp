@@ -14,25 +14,42 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <stdlib.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image/stb_image_write.h"
 
 
 
 float year = 0, day = 0, revolution = 0, earthDist = 3.0, moonDist = 0.9;
-static int view = 15, x = 0;
+static int view = 15, x = 0, velocity = 1;
 //x é a variável que rege quem sofrerá a mudança de massa (x = 0 -> weight sun increase; x = 1 -> weight sun decrease; x = 2 -> weight earth increase; x = 3 -> weight earth decrease)
+
+unsigned char* loadImg(void){
+
+    int width, height, channels;
+    unsigned char *img = stbi_load("stb_image/textures/sun.jpg", &width, &height, &channels, 0);
+    if(img == NULL) {
+        printf("Error in loading the image\n");
+        exit(1);
+    }
+    printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n", width, height, channels);
+
+    return img;
+}
 
 void init(void)
 {
    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
    GLfloat mat_shininess[] = { 50.0 };
-   GLfloat light_position[] = { 1.0, 0.0, 0.0, 0.0 };   
+   GLfloat light_position[] = { 1.0, 0.0, 0.0, 0.0 };
 
    glClearColor (0.0, 0.0, 0.0, 0.0);
    glShadeModel (GL_SMOOTH);
 
    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_position);  
+   glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_position);
 
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
@@ -54,38 +71,41 @@ void pointOfView(){
 
 }
 
-void drawSun(){   
-  
-    glTranslatef(0,0,-4);
-    glutSolidSphere(1.5, 20, 16);   /* draw sun */
-    //lRotatef ((GLfloat) year, 0.0, 1.0, 0.0);    
-     
+void drawSun(){
+
+    //unsigned char* img = loadImg();
+    //glEnable(GL_TEXTURE_2D);
+        //glBindTexture(GL_TEXTURE_2D, img);
+        glTranslatef(0,0,-4);
+        glutSolidSphere(1.5, 20, 16);   /* draw sun */
+    //glDisable(GL_TEXTURE_2D);
+
 }
 
-void drawEarth(){   
+void drawEarth(){
 
     glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
     glTranslatef (earthDist, 0.0, 0.0);
     glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
     glutSolidSphere(0.6, 20, 16);    /* draw earth */
-    
+
 }
 
 void drawMoon(){
-    
-    glTranslatef (moonDist, 0.0, 0.0);  
-    ///glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);  
-    glutSolidSphere(0.2, 20, 16);  /* draw moon */    
+
+    glTranslatef (moonDist, 0.0, 0.0);
+    ///glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);
+    glutSolidSphere(0.2, 20, 16);  /* draw moon */
     glPopMatrix();
 }
 
 void incrementation(){
    //incremento na translação da terra (em torno do sol
-   year = year + 1;
+   year = year + velocity*0.1;
    if(year > 360) year = year - 360;
 
    //incremento na rotação da terra
-   day = day + 5;
+   day = day + velocity*0.5;
    if(day > 360) day = day - 360;
 
    //incremento na translação da lua (em torno da terra)
@@ -96,9 +116,9 @@ void incrementation(){
 void desenhoOrbita(GLdouble tamanho){
     //Orbita da terra/
     GLUquadric *disk;
-    disk = gluNewQuadric(); 
-    glPushMatrix();    
-    glColor3f(1.0, 0.0, 1.0);     
+    disk = gluNewQuadric();
+    glPushMatrix();
+    glColor3f(1.0, 0.0, 1.0);
     glRotatef(89, 1, 0, 0);
     glTranslatef(0, 0, 0);
     gluDisk(disk, tamanho-0.1, tamanho, 600, 600);
@@ -113,9 +133,9 @@ void display(void)
    	glLoadIdentity();
    	pointOfView();
    	drawSun();
-   	desenhoOrbita(earthDist); 
-   	drawEarth();   	 
-   	drawMoon();    		
+   	desenhoOrbita(earthDist);
+   	drawEarth();
+   	drawMoon();
    	incrementation();
    	glutSwapBuffers(); //swap the buffers
 }
@@ -162,10 +182,16 @@ void keyboard (unsigned char key, int x, int y)
       	  break;
       case 'd':
       	  gravityChange(2);
-      	  break;
+      	  break;                            //tratar excessões -> velocity negativa, terra entrando no sol...
       case 'f':
       	  gravityChange(3);
       	  break;
+      case 'h':
+          velocity = velocity + 2;
+          break;
+      case 'l':
+          velocity = velocity - 2;
+          break;
       case 27:
          exit(0);
          break;
