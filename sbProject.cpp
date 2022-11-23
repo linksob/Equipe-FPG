@@ -20,13 +20,21 @@
 #include "stb_image/stb_image_write.h"
 
 
-
 float year = 0, day = 0, revolution = 0, earthDist = 3.0, moonDist = 0.9;
 static int view = 15, x = 0, velocity = 1;
 //x é a variável que rege quem sofrerá a mudança de massa (x = 0 -> weight sun increase; x = 1 -> weight sun decrease; x = 2 -> weight earth increase; x = 3 -> weight earth decrease)
 
-unsigned char* loadImg(void){
 
+unsigned int loadImg(void){
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
     int width, height, channels;
     unsigned char *img = stbi_load("stb_image/textures/sun.jpg", &width, &height, &channels, 0);
     if(img == NULL) {
@@ -34,8 +42,10 @@ unsigned char* loadImg(void){
         exit(1);
     }
     printf("Loaded image with a width of %dpx, a height of %dpx and %d channels\n", width, height, channels);
-
-    return img;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+    //glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(img);
+    return texture;
 }
 
 void init(void)
@@ -54,6 +64,10 @@ void init(void)
    glEnable(GL_LIGHTING);
    glEnable(GL_LIGHT0);
    glEnable(GL_DEPTH_TEST);
+
+   unsigned int texture = loadImg();
+   glBindTexture(GL_TEXTURE_2D, texture);
+
 }
 
 void reshape(int w,int h)
@@ -68,33 +82,23 @@ void reshape(int w,int h)
 
 void pointOfView(){
     gluLookAt (0, view, 3, 0.0, 0.0, 0.0, 0, 1.0, 0); //posição da câmera
-
 }
 
 void drawSun(){
-
-    //unsigned char* img = loadImg();
-    //glEnable(GL_TEXTURE_2D);
-        //glBindTexture(GL_TEXTURE_2D, img);
-        glTranslatef(0,0,-4);
-        glutSolidSphere(1.5, 20, 16);   /* draw sun */
-    //glDisable(GL_TEXTURE_2D);
-
+    glTranslatef(0,0,-4);
+    glutSolidSphere(1.5, 20, 16);   /* draw sun */
 }
 
 void drawEarth(){
-
     glRotatef ((GLfloat) year, 0.0, 1.0, 0.0);
     glTranslatef (earthDist, 0.0, 0.0);
     glRotatef ((GLfloat) day, 0.0, 1.0, 0.0);
     glutSolidSphere(0.6, 20, 16);    /* draw earth */
-
 }
 
 void drawMoon(){
-
     glTranslatef (moonDist, 0.0, 0.0);
-    ///glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);
+    //glRotatef ((GLfloat) revolution, 0.0, 1.0, 0.0);
     glutSolidSphere(0.2, 20, 16);  /* draw moon */
     glPopMatrix();
 }
@@ -110,7 +114,8 @@ void incrementation(){
 
    //incremento na translação da lua (em torno da terra)
    //revolution = revolution + 3;
-   //if(revolution > 360) revolution = revolution - 360;
+   //if(revolution > 360) revolution = revolution - 360;  
+   
 }
 
 void desenhoOrbita(GLdouble tamanho){
@@ -145,16 +150,21 @@ void gravityChange(int x){
 
    switch (x) {
       case 0:
-         earthDist = earthDist + 1;
+         earthDist = earthDist*(1.333);
          break;
       case 1:
-      	 earthDist = earthDist - 1;
+         if(earthDist >= 3){
+            earthDist = earthDist*(0.75);
+         }
       	 break;
       case 2:
+         if(moonDist < 1.3)
       	 moonDist = moonDist + 0.1;
          break;
       case 3:
-         moonDist = moonDist - 0.1;
+         if(moonDist >= 0.9){
+            moonDist = moonDist - 0.1;
+         }
          break;
       case 27:
          exit(0);
@@ -168,6 +178,7 @@ void keyboard (unsigned char key, int x, int y)
 {
    switch (key) {
       case 'v':
+      case 'V':
           if(view == 0){
             view = 15;
           }else{
@@ -175,22 +186,30 @@ void keyboard (unsigned char key, int x, int y)
           }
           break;
       case 'a':
+      case 'A':
       	  gravityChange(0);
       	  break;
       case 's':
+      case 'S':
       	  gravityChange(1);
       	  break;
       case 'd':
+      case 'D':
       	  gravityChange(2);
       	  break;                            //tratar excessões -> velocity negativa, terra entrando no sol...
       case 'f':
+      case 'F':
       	  gravityChange(3);
       	  break;
       case 'h':
+      case 'H':
           velocity = velocity + 2;
           break;
       case 'l':
-          velocity = velocity - 2;
+      case 'L':
+          if(velocity > 2){
+             velocity = velocity - 2;
+          }
           break;
       case 27:
          exit(0);
@@ -207,6 +226,7 @@ int main(int argc, char** argv)
    glutInitWindowSize (1000, 1000);
    glutInitWindowPosition (100, 100);
    glutCreateWindow (argv[0]);
+   loadImg();
    init ();
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
